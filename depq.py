@@ -214,8 +214,12 @@ class DEPQ:
                         right_left_child, right_right_child)
             min_index = elements.index(min(elements))
             if min_index != 0:
-                self.pq[index], self.pq[gc[min_index-1]] = self.pq[gc[min_index-1]], self.pq[index]
-                self._minify_down(gc[min_index-1])
+                m = gc[min_index-1]
+                self.pq[index], self.pq[m] = self.pq[m], self.pq[index]
+                parent = m//2
+                if self.pq[m] > self.pq[parent]:
+                    self.pq[m], self.pq[parent] = self.pq[parent], self.pq[m]
+                self._minify_down(m)
 
     def _heappop_max(self):
         'Pop the maximum priority node from the heap'
@@ -251,8 +255,12 @@ class DEPQ:
                         right_left_child, right_right_child)
             max_index = elements.index(max(elements))
             if max_index != 0:
-                self.pq[index], self.pq[gc[max_index-1]] = self.pq[gc[max_index-1]], self.pq[index]
-                self._maxify_down(gc[max_index-1])
+                m = gc[max_index-1]
+                self.pq[index], self.pq[m] = self.pq[m], self.pq[index]
+                parent = m//2
+                if self.pq[m] < self.pq[parent]:
+                    self.pq[m], self.pq[parent] = self.pq[parent], self.pq[m]
+                self._maxify_down(m)
 
     def empty(self):
         return self.n_items == 0
@@ -313,7 +321,6 @@ def test_same_priority():
         queue.push(i, priority=0)
     for i in range(20):
         item = queue.pop_min()
-        print(item)
         assert item == i, '{} != {}'.format(item,i)
 
     queue = DEPQ()
@@ -322,8 +329,7 @@ def test_same_priority():
     for i in range(20):
         item = queue.pop_max()
         assert item == 19-i, '{} != {}'.format(item,19-i)
-    
-    assert False
+
     print('Test passed: same priority')
 
 def test():
