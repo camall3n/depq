@@ -10,29 +10,29 @@ from depq import DEPQ
 queue = DEPQ()
 </pre>
 
-## Adding a task with priority
-<b>Syntax:</b> queue.add_task(task, priority=0)
+## Adding an item with priority
+<b>Syntax:</b> queue.push(item, priority=0)
 
-<pre>queue.add_task('one', 1)  # Adds a task with priority 1</pre>
-<pre>queue.add_task('zero')  # Adds a task with default priority of 0</pre>
+<pre>queue.push('one', 1)  # Adds an item with priority 1</pre>
+<pre>queue.push('zero')  # Adds an item with default priority of 0</pre>
 
-<b>Note: </b> Adding an already exisiting task back to the queue updates the priority. <br>
-<pre>queue.add_task('one', 7)  # Updates the previous priority of 1 with 7</pre>
+<b>Note: </b> Adding an already exisiting item back to the queue updates the priority. <br>
+<pre>queue.push('one', 7)  # Updates the previous priority of 'one' with 7</pre>
 
-## Pop the min priority task
-<pre> queue.pop_min_task() </pre>
+## Pop the min priority item
+<pre> queue.pop_min() </pre>
 
-## Pop the max priority task
-<pre> queue.pop_max_task() </pre>
+## Pop the max priority item
+<pre> queue.pop_max() </pre>
 
-## Peek the min priority task
-<pre> queue.peek_min_task() </pre>
+## Peek the min priority item
+<pre> queue.peek_min() </pre>
 
-## Peek the max priority task
-<pre> queue.peek_max_task() </pre>
+## Peek the max priority item
+<pre> queue.peek_max() </pre>
 
-## Remove a particular task
-<pre> queue.remove_task(task) </pre>
+## Remove a particular item
+<pre> queue.remove(item) </pre>
 
 ## Check if queue is empty
 
