@@ -21,7 +21,7 @@ class PQItem:
             The associated data
     """
     priority: int
-    count: int#Any=field(compare=False)
+    count: Any=field(compare=False)
     data: Any=field(compare=False)
     def __init__(self, priority, count, data):
         self.priority = priority
@@ -40,7 +40,7 @@ class PQItem:
         return cls(-math.inf, -1, None)
 
 
-class DEPQ:
+class depq:
     def __init__(self, maxlen=None, mode='max'):
         self.pq = []  # List of entries arranged in a heap
         self.entry_finder = {}  # Mapping of item to entries
@@ -276,7 +276,7 @@ class DEPQ:
 
 def test_basics():
     # Basic types
-    queue = DEPQ()
+    queue = depq()
     assert not queue
     queue.push('foo', 10)
     queue.push('bar', 9)
@@ -292,7 +292,7 @@ def test_basics():
     print('Test passed: basic types')
 
 def test_maxlen():
-    queue = DEPQ(maxlen=3, mode='max')
+    queue = depq(maxlen=3, mode='max')
     queue.push('foo', 10)
     queue.push('bar', 7)
     queue.push('baz', 15)
@@ -303,7 +303,7 @@ def test_maxlen():
     assert queue.pop_min() == 'foo'
     assert queue.pop_max() == 'baz'
 
-    queue = DEPQ(maxlen=3, mode='min')
+    queue = depq(maxlen=3, mode='min')
     queue.push('foo', 10)
     queue.push('bar', 7)
     queue.push('baz', 15)
@@ -315,20 +315,40 @@ def test_maxlen():
     assert queue.pop_max() == 'foo'
     print('Test passed: maxlen')
 
-def test_same_priority():
-    queue = DEPQ()
+def test_many_elements():
+    queue = depq()
     for i in range(20):
-        queue.push(i, priority=0)
+        queue.push(i, priority=i)
     for i in range(20):
         item = queue.pop_min()
         assert item == i, '{} != {}'.format(item,i)
 
-    queue = DEPQ()
+    queue = depq()
     for i in range(20):
-        queue.push(i, priority=0)
+        queue.push(i, priority=i)
     for i in range(20):
         item = queue.pop_max()
         assert item == 19-i, '{} != {}'.format(item,19-i)
+    
+    print('Test passed: many elements')
+
+def test_same_priority():
+    queue = depq()
+    for i in range(20):
+        queue.push(i, priority=0)
+    inputs = list(range(20))
+    results = [0] + inputs[:0:-1]
+    for i in results:
+        item = queue.pop_min()
+        assert item == i, '{} != {}'.format(item,i)
+
+    queue = depq()
+    for i in range(20):
+        queue.push(i, priority=0)
+    results = [1]+ inputs[:1:-1] + [0]
+    for i in results:
+        item = queue.pop_max()
+        assert item == i, '{} != {}'.format(item,i)
 
     print('Test passed: same priority')
 
@@ -337,6 +357,7 @@ def test():
 
     test_basics()
     test_maxlen()
+    test_many_elements()
     test_same_priority()
 
     print('All tests passed.')
