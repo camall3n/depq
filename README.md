@@ -2,7 +2,7 @@
 A min-max heap implementation for a double ended priority queue with sort stability.
 Refer to the medium post [link](https://medium.com/@kiranbaktha2002/min-max-heaps-for-double-ended-priority-queue-b8a6b93997fb) for more details on the implementation and running time.
 
-Modified by Cameron Allen to add an optional maximum length parameter. 
+Original code by Kiran Baktha. Modified by Cameron Allen to add an optional maximum length parameter.
 
 # Usage
 <pre>
