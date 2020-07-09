@@ -7,7 +7,7 @@ from typing import Any
 
 
 @dataclass(order=True)
-class PQItem:
+class PQueueItem:
     """Wrapper for priority queue items
 
     Items should only be compared based on their priority, not data.
@@ -30,11 +30,11 @@ class PQItem:
     def unwrapped(self):
         """Return the underlying (priority, data) tuple"""
         return self.priority, self.count, self.data
-    
+
     @classmethod
     def maximum(cls):
         return cls(math.inf, -1, None)
-    
+
     @classmethod
     def minimum(cls):
         return cls(-math.inf, -1, None)
@@ -70,7 +70,7 @@ class depq:
                 else:
                     return  # priority not low enough; drop this item
         count = next(self.counter)
-        entry = PQItem(priority, count, item)
+        entry = PQueueItem(priority, count, item)
         self.entry_finder[item] = entry
         self._heappush(entry)
         self.n_items += 1
@@ -198,18 +198,18 @@ class depq:
         left_index = 2*index+1
         right_index = 2*index+2
         if not len(self.pq) > 2*(left_index)+1:  # Last min level
-            left_child = self.pq[left_index] if left_index < len(self.pq) else PQItem.maximum()
-            right_child = self.pq[right_index] if right_index < len(self.pq) else PQItem.maximum()
+            left_child = self.pq[left_index] if left_index < len(self.pq) else PQueueItem.maximum()
+            right_child = self.pq[right_index] if right_index < len(self.pq) else PQueueItem.maximum()
             elements = (self.pq[index], left_child, right_child)
             min_index = elements.index(min(elements))
             if min_index != 0:
                 self.pq[index], self.pq[min_index-1+left_index] = self.pq[min_index-1+left_index], self.pq[index]
         else:  # Next min level is 2 levels down
             gc = [2*left_index+1, 2*left_index+2, 2*right_index+1, 2*right_index+2]
-            left_left_child = self.pq[gc[0]] if gc[0] < len(self.pq) else PQItem.maximum()
-            left_right_child = self.pq[gc[1]] if gc[1] < len(self.pq) else PQItem.maximum()
-            right_left_child = self.pq[gc[2]] if gc[2] < len(self.pq) else PQItem.maximum()
-            right_right_child = self.pq[gc[3]] if gc[3] < len(self.pq) else PQItem.maximum()
+            left_left_child = self.pq[gc[0]] if gc[0] < len(self.pq) else PQueueItem.maximum()
+            left_right_child = self.pq[gc[1]] if gc[1] < len(self.pq) else PQueueItem.maximum()
+            right_left_child = self.pq[gc[2]] if gc[2] < len(self.pq) else PQueueItem.maximum()
+            right_right_child = self.pq[gc[3]] if gc[3] < len(self.pq) else PQueueItem.maximum()
             elements = (self.pq[index], left_left_child, left_right_child,
                         right_left_child, right_right_child)
             min_index = elements.index(min(elements))
@@ -225,8 +225,8 @@ class depq:
         'Pop the maximum priority node from the heap'
         if len(self.pq) == 1:
             return self.pq.pop()
-        right = self.pq[2] if 2 < len(self.pq) else PQItem.minimum()
-        elements = (PQItem.minimum(), self.pq[1], right)
+        right = self.pq[2] if 2 < len(self.pq) else PQueueItem.minimum()
+        elements = (PQueueItem.minimum(), self.pq[1], right)
         max_index = elements.index(max(elements))
         self.pq[max_index], self.pq[len(self.pq)-1] = self.pq[len(self.pq)-1], self.pq[max_index]
         return_value = self.pq.pop()
@@ -239,18 +239,18 @@ class depq:
         left_index = 2*index+1
         right_index = 2*index+2
         if not len(self.pq) > 2*(left_index)+1:  # Last max level
-            left_child = self.pq[left_index] if left_index < len(self.pq) else PQItem.minimum()
-            right_child = self.pq[right_index] if right_index < len(self.pq) else PQItem.minimum()
+            left_child = self.pq[left_index] if left_index < len(self.pq) else PQueueItem.minimum()
+            right_child = self.pq[right_index] if right_index < len(self.pq) else PQueueItem.minimum()
             elements = (self.pq[index], left_child, right_child)
             max_index = elements.index(max(elements))
             if max_index != 0:
                 self.pq[index], self.pq[max_index-1+left_index] = self.pq[max_index-1+left_index], self.pq[index]
         else:  # Next max level is 2 levels down
             gc = [2*left_index+1, 2*left_index+2, 2*right_index+1, 2*right_index+2]
-            left_left_child = self.pq[gc[0]] if gc[0] < len(self.pq) else PQItem.minimum()
-            left_right_child = self.pq[gc[1]] if gc[1] < len(self.pq) else PQItem.minimum()
-            right_left_child = self.pq[gc[2]] if gc[2] < len(self.pq) else PQItem.minimum()
-            right_right_child = self.pq[gc[3]] if gc[3] < len(self.pq) else PQItem.minimum()
+            left_left_child = self.pq[gc[0]] if gc[0] < len(self.pq) else PQueueItem.minimum()
+            left_right_child = self.pq[gc[1]] if gc[1] < len(self.pq) else PQueueItem.minimum()
+            right_left_child = self.pq[gc[2]] if gc[2] < len(self.pq) else PQueueItem.minimum()
+            right_right_child = self.pq[gc[3]] if gc[3] < len(self.pq) else PQueueItem.minimum()
             elements = (self.pq[index], left_left_child, left_right_child,
                         right_left_child, right_right_child)
             max_index = elements.index(max(elements))
@@ -267,12 +267,12 @@ class depq:
 
     def __len__(self):
         return self.n_items
-    
+
     def items(self):
         """Return the list of (priority, data) tuples in the queue"""
         return [item.unwrapped() for item in sorted(self.entry_finder.values())]
 
-    
+
 
 def test_basics():
     # Basic types
@@ -329,7 +329,7 @@ def test_many_elements():
     for i in range(20):
         item = queue.pop_max()
         assert item == 19-i, '{} != {}'.format(item,19-i)
-    
+
     print('Test passed: many elements')
 
 def test_same_priority():
